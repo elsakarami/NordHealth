@@ -1,0 +1,114 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.sign-up-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+  &__inner {
+    width: 100%;
+    max-width: 448px;
+    border-radius: var(--n-border-radius);
+    background-color: var(--n-color-surface);
+    box-shadow: var(--n-box-shadow-card);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    &__img {
+      width: 250px;
+      position: absolute;
+      top: -164px;
+      & > img {
+        width: 100%;
+      }
+    }
+  }
+  @media (max-width: 768px) {
+    justify-content: end;
+  }
+}
+
+.passowrd-field {
+  &__errors-list,
+  .errors-list {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    &__item {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+  }
+}
+
+.signup-form {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--n-space-l);
+  padding: var(--n-space-xl);
+  border-radius: var(--n-border-radius);
+  @media (max-width: 768px) {
+    gap: var(--n-space-s);
+    padding: var(--n-space-l);
+  }
+
+  &__title {
+    font-size: var(--n-font-size-xl);
+    font-weight: var(--n-font-weight-heading);
+    text-align: center;
+    font-family: var(--n-font-family);
+  }
+}
+
+.pagination-control {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  gap: 10px;
+}
+
+.table-cell-content {
+  max-width: 80px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.brewery-filter {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-bottom: 1rem;
+}
+.brewery-table-org{
+  height: 100%;
+}
+.nav-link-reset {
+  all: unset;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.echart-container{
+  width: 100%; height: 400px
+}
+.breweries-container{
+  height: 100%; width: 100%;
+}
