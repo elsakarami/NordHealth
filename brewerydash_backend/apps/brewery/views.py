@@ -12,9 +12,9 @@ class BreweryAPIClient:
     BASE_URL = 'https://api.openbrewerydb.org/v1/breweries'
 
     @staticmethod
-    def fetch_breweries() -> Optional[List[Dict[str, Any]]]:
+    def fetch_breweries(params: Optional[Dict[str, Any]] = None) -> Optional[List[Dict[str, Any]]]:
         try:
-            response = requests.get(BreweryAPIClient.BASE_URL, timeout=5)
+            response = requests.get(BreweryAPIClient.BASE_URL, params=params or {}, timeout=5)
             response.raise_for_status()
             return response.json()
         except requests.RequestException:
@@ -25,8 +25,8 @@ class BreweryBaseAPIView(APIView):
     """Base API view with common functionality for Brewery APIs."""
     permission_classes = [IsAuthenticated]
 
-    def get_breweries(self) -> Optional[List[Dict[str, Any]]]:
-        return BreweryAPIClient.fetch_breweries()
+    def get_breweries(self, params: Optional[Dict[str, Any]] = None) -> Optional[List[Dict[str, Any]]]:
+        return BreweryAPIClient.fetch_breweries(params=params)
 
     def service_unavailable_response(self) -> Response:
         return Response(
@@ -36,10 +36,13 @@ class BreweryBaseAPIView(APIView):
 
 
 class BreweryListAPIView(BreweryBaseAPIView):
-    """API view to list all breweries"""
-    
+    """API view to list selected breweries"""
+
     def get(self, request, *args, **kwargs) -> Response:
-        breweries = self.get_breweries()
+        limit = request.query_params.get("limit", "200")
+        params = {"per_page": limit}
+        breweries = self.get_breweries(params)
+
         if breweries is None:
             return self.service_unavailable_response()
 
@@ -48,15 +51,20 @@ class BreweryListAPIView(BreweryBaseAPIView):
 
 class BreweryGroupedByFieldAPIView(BreweryBaseAPIView):
     """API view to group breweries by a specific field"""
+
     def get(self, request, *args, **kwargs) -> Response:
         group_by_field = request.query_params.get('group_by')
+        limit = request.query_params.get("limit", "200")
+
         if not group_by_field:
             return Response(
                 {"error": "The 'group_by' query parameter is required."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        breweries = self.get_breweries()
+        params = {"per_page": limit}
+        breweries = self.get_breweries(params)
+
         if breweries is None:
             return self.service_unavailable_response()
 
@@ -76,5 +84,5 @@ class BreweryGroupedByFieldAPIView(BreweryBaseAPIView):
     ) -> Dict[str, int]:
         """Groups breweries by the specified field."""
         return dict(Counter(
-            brewery[field] for brewery in breweries if field in brewery and brewery[field] is not None
+            brewery.get(field) for brewery in breweries if brewery.get(field) is not None
         ))
