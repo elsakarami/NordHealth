@@ -7,6 +7,7 @@ import { AxiosService } from './useAxios'
 import type { AxiosResponse } from 'axios'
 
 import type { Brewery } from '@/types/index'
+import { ref } from 'vue'
 
 export class BreweryService {
     public data
